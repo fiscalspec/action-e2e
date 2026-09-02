@@ -1,0 +1,24 @@
+# T7 da spec 021 — e2e real: upload-sarif num repo público com code scanning.
+name: sarif
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  sarif:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: fiscalspec check + upload SARIF
+        id: fiscalspec
+        uses: fiscalspec/action@v1
+        with:
+          files: 'notas/**/*.xml'
+          ruleset: nfe-rtc@2025.002-v1.51
+          api-key: ${{ secrets.FISCALSPEC_API_KEY }}
+          upload-sarif: true

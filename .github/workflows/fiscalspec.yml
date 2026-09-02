@@ -1,0 +1,44 @@
+# Cole este arquivo em .github/workflows/fiscalspec.yml do SEU repo.
+#
+# Pré-requisito: um secret FISCALSPEC_API_KEY (Settings → Secrets and
+# variables → Actions) — necessário só se `ruleset` for um id (nfe-rtc@…) não
+# baixado ainda. Se você mantém o corpus/ruleset dentro do próprio repo (modo
+# air-gapped), aponte `ruleset` para esse diretório e pode remover `api-key`.
+name: fiscalspec
+
+on:
+  pull_request:
+    paths:
+      - 'notas/**/*.xml'
+
+permissions:
+  contents: read
+  # necessário só se você ligar `upload-sarif: true` abaixo
+  security-events: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: fiscalspec check
+        id: fiscalspec
+        uses: fiscalspec/action@v1
+        with:
+          files: 'notas/**/*.xml'
+          ruleset: nfe-rtc@2025.002-v1.51
+          api-key: ${{ secrets.FISCALSPEC_API_KEY }}
+          # Descomente para o build falhar quando alguma violação for de
+          # regra revisada (confidence: reviewed) — por default este job
+          # termina verde mesmo com violações (inviolável 2 do CLAUDE.md).
+          # fail-on: reviewed
+
+      - name: usar os outputs (opcional)
+        if: always()
+        run: |
+          echo "violated: ${{ steps.fiscalspec.outputs.violated }}"
+          echo "passed: ${{ steps.fiscalspec.outputs.passed }}"
+          echo "cannot-decide: ${{ steps.fiscalspec.outputs['cannot-decide'] }}"
+          echo "report-file: ${{ steps.fiscalspec.outputs.report-file }}"
+          echo "sarif-file: ${{ steps.fiscalspec.outputs.sarif-file }}"
