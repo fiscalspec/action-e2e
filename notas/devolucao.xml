@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo (spec 018): devolução com CFOP 1202 sem referência a nível de item,
+     emitida após 2026-10-05 (vigência de produção da semântica v1.51).
+     Na v1.50 o CFOP 1202 está na exceção da VC02-14 — a nota NÃO é rejeitada.
+     Na v1.51 a exceção desaparece — rejeição 321. Mesmo XML, mesma regra. -->
+<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+  <infNFe Id="NFe1" versao="4.00">
+    <ide><mod>55</mod><dhEmi>2026-10-06T10:00:00-03:00</dhEmi><finNFe>4</finNFe></ide>
+    <det nItem="1">
+      <prod><CFOP>1202</CFOP><vProd>100.00</vProd><indTot>1</indTot></prod>
+      <imposto><IBSCBS><CST>000</CST></IBSCBS></imposto>
+    </det>
+    <total><ICMSTot><vProd>100.00</vProd></ICMSTot></total>
+  </infNFe>
+</NFe>
